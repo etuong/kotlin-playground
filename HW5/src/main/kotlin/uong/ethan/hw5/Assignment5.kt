@@ -9,7 +9,7 @@
 // Replace all comments that start with TODO
 // Leave all other code as-is
 
-package stanchfield.scott.hw5 // TODO change to YOUR package name here
+package uong.ethan.hw5 // TODO change to YOUR package name here
 
 // In this assignment, you'll work with Kotlin's Lists and Maps
 
@@ -22,7 +22,12 @@ package stanchfield.scott.hw5 // TODO change to YOUR package name here
 //        friends - a non-null list of Mammals (using Kotlin's List<Mammal>)
 //      Note that these are NOT constructor properties - this allows us to define subclasses
 //        that are data classes that define the properties in their constructors.
-//
+sealed interface Mammal {
+    val name: String
+    val age: Int
+    var friends: List<Mammal>
+}
+
 //      Three subclasses (data classes) of Mammal. Each will have a constructor that has name, age and friends.
 //      The friends parameter should default to an empty list.
 //
@@ -33,13 +38,33 @@ package stanchfield.scott.hw5 // TODO change to YOUR package name here
 //      Human - adds property nickname String (non-null)
 //      Dog - adds property favoriteTreat String (non-null)
 //      Cat - adds property numberOfMiceSlain Int (non-null)
-//
+data class Human(
+    override val name: String,
+    override val age: Int,
+    val nickname: String,
+    override var friends: List<Mammal> = emptyList()
+) : Mammal
+
+data class Dog(
+    override val name: String,
+    override val age: Int,
+    val favoriteTreat: String,
+    override var friends: List<Mammal> = emptyList()
+) : Mammal
+
+data class Cat(
+    override val name: String,
+    override val age: Int,
+    val numberOfMiceSlain: Int,
+    override var friends: List<Mammal> = emptyList()
+) : Mammal
+
 // Note - the classes must have an actual property named nickName, favoriteTreat or numberOfMiceSlain. Each
 //        class will only have the one of these that is specified. The interface will NOT have these properties.
 //        (Also - some students in the past tried setting up a "uniqueFeature" property in the interface and
 //        implementing this in the subclasses. DO NOT do this. Each class should have a distinct property name
 //        that no other class has to help you see how smart casting does some really cool things...)
-//
+
 // Implement the following top-level functions that are used in the code provided below.
 // You can implement them in this file or other file(s)
 // You can define additional helper functions if you would like
@@ -76,35 +101,76 @@ package stanchfield.scott.hw5 // TODO change to YOUR package name here
 //      getMammalsAndDirectFriends()
 //          return a list of all top-level mammals and all of their direct friends
 //          you can use this inside many of the other functions
-//
+fun List<Mammal>.getMammalsAndDirectFriends(): List<Mammal> {
+    return this.flatMap { m -> mutableListOf(m).also { it.addAll(m.friends) } }.toList()
+    //return this.flatMap { m -> mutableListOf(m + m.friends) }.toList()
+}
+
 //      getNames()
 //          return a comma-separated string of the names of the mammals that are directly 
 //          in the list, NOT friends, in alphabetical order
-//
+fun List<Mammal>.getNames(): String {
+    return this.map { it.name }.sorted().joinToString(separator = ", ")
+}
+
 //      getNamesAndFriendsAges()
 //          creates a map of the name of each mammal and the sum of the ages of their friends
-//
+fun List<Mammal>.getNamesAndFriendsAges(): Map<String, Int> {
+    return this.map { it.name to it.friends.sumOf { it.age } }.toMap()
+}
+
 //      getNamesAndDogFriendsAges()
 //          creates a map of the name of each mammal and the sum of the ages of ONLY their
 //              friends that are dogs
-//
+fun List<Mammal>.getNamesAndDogFriendsAges(): Map<String, Int> {
+    return this.map { it.name to it.friends.filterIsInstance<Dog>().sumOf { it.age } }.toMap()
+}
+
 //      getTotalMiceSlain()
 //          return the total number of mice slain by all cats (cats in the list AND cat friends
 //              of any mammal in the list)
-//
+fun List<Mammal>.getTotalMiceSlain(): Int {
+    return this.getMammalsAndDirectFriends().filterIsInstance<Cat>().sumOf { it.numberOfMiceSlain }
+}
+
 //      getAllNames()
 //          return a comma-separated string of the names of all mammals, direct and friends,
 //              in alphabetical order
-//
+fun List<Mammal>.getAllNames(): String {
+    return this.getMammalsAndDirectFriends().map { it.name }.sorted().joinToString(separator = ", ")
+}
+
 //      groupByType()
 //          create a map that groups all mammals, direct and friends, by their type name
-//
+fun List<Mammal>.groupByType(): Map<String, List<Mammal>> {
+    val mammalsByType = this.groupBy { it::class }
+    return this.getMammalsAndDirectFriends()
+        .groupBy({ it::class.toString() }, valueTransform = { it })
+}
+
 //      getUniqueFeatures()
 //          create a list of strings reporting every mammals' (direct and friends)
 //          name and unique feature, sorted. Don't worry about plural/singular wording
 //          on the slain mice - just always use "mice", even if there were only one slain...
 //          see the sample output below
-//
+fun List<Mammal>.getUniqueFeatures(): List<String> {
+    val uniqueFeatures = arrayListOf<String>()
+    /*this.getMammalsAndDirectFriends().forEach { m ->
+        run {
+            when (m) {
+                is Human -> uniqueFeatures.add("${m.name} is nicknamed ${m.nickname}")
+                is Dog -> uniqueFeatures.add("${m.name} loves ${m.favoriteTreat}")
+                is Cat -> uniqueFeatures.add("${m.name} killed ${m.numberOfMiceSlain} mice")
+            }
+        }
+    }*/
+    val allMammals = this.getMammalsAndDirectFriends()
+    allMammals.filterIsInstance<Cat>().onEach { uniqueFeatures.add("${it.name} killed ${it.numberOfMiceSlain} mice") }
+    allMammals.filterIsInstance<Human>().onEach {uniqueFeatures.add("${it.name} is nicknamed ${it.nickname}")  }
+    allMammals.filterIsInstance<Dog>().onEach { uniqueFeatures.add("${it.name} loves ${it.favoriteTreat}") }
+    return uniqueFeatures
+}
+
 //
 // A few operators/functions you may need that I want to highlight:
 //
@@ -190,13 +256,13 @@ package stanchfield.scott.hw5 // TODO change to YOUR package name here
 //      Worf loves Gagh
 
 
-
 // DO NOT CHANGE THE FOLLOWING CODE!!!
 // DO NOT CHANGE THE FOLLOWING CODE!!!
 // DO NOT CHANGE THE FOLLOWING CODE!!!
 fun main() {
     val mammals = listOf(
-        Dog("Fido", 1, "Gravy Train",
+        Dog(
+            "Fido", 1, "Gravy Train",
             friends = listOf(
                 Human("Scott", 53, "Scooter"),
                 Human("Steven", 53, "Steve"),
@@ -206,7 +272,8 @@ fun main() {
                 Dog("Rover", 7, "Real Bone")
             )
         ),
-        Cat("Blackie", 2, 22,
+        Cat(
+            "Blackie", 2, 22,
             friends = listOf(
                 Human("Mike", 23, "Mikey"),
                 Human("Sue", 26, "Susie"),
@@ -214,7 +281,8 @@ fun main() {
                 Cat("Little One", 1, 0)
             )
         ),
-        Human("Patrick", 79, "Jean Luc",
+        Human(
+            "Patrick", 79, "Jean Luc",
             friends = listOf(
                 Human("Ian", 80, "Gandalf"),
                 Human("Hugh", 51, "Wolverine"),
@@ -248,7 +316,7 @@ fun main() {
     println("Mammals grouped by type")
     mammals
         .groupByType()
-        .forEach { (type, mammals) -> println("    $type: ${mammals.getNames() }") }
+        .forEach { (type, mammals) -> println("    $type: ${mammals.getNames()}") }
 
     println()
     println("Unique Features")
