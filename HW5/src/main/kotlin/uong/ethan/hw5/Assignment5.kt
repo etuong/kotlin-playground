@@ -102,8 +102,9 @@ data class Cat(
 //          return a list of all top-level mammals and all of their direct friends
 //          you can use this inside many of the other functions
 fun List<Mammal>.getMammalsAndDirectFriends(): List<Mammal> {
-    return this.flatMap { m -> mutableListOf(m).also { it.addAll(m.friends) } }.toList()
-    //return this.flatMap { m -> mutableListOf(m + m.friends) }.toList()
+    // Note: This works too but it's a mutable list
+    //return this.flatMap { m -> mutableListOf(m).also { it.addAll(m.friends) } }
+    return this + this.flatMap { it.friends }
 }
 
 //      getNames()
@@ -142,10 +143,9 @@ fun List<Mammal>.getAllNames(): String {
 
 //      groupByType()
 //          create a map that groups all mammals, direct and friends, by their type name
-fun List<Mammal>.groupByType(): Map<String, List<Mammal>> {
-    val mammalsByType = this.groupBy { it::class }
+fun List<Mammal>.groupByType(): Map<String?, List<Mammal>> {
     return this.getMammalsAndDirectFriends()
-        .groupBy({ it::class.toString() }, valueTransform = { it })
+        .groupBy({ it::class.simpleName }, valueTransform = { it })
 }
 
 //      getUniqueFeatures()
@@ -155,19 +155,17 @@ fun List<Mammal>.groupByType(): Map<String, List<Mammal>> {
 //          see the sample output below
 fun List<Mammal>.getUniqueFeatures(): List<String> {
     val uniqueFeatures = arrayListOf<String>()
-    /*this.getMammalsAndDirectFriends().forEach { m ->
-        run {
-            when (m) {
-                is Human -> uniqueFeatures.add("${m.name} is nicknamed ${m.nickname}")
-                is Dog -> uniqueFeatures.add("${m.name} loves ${m.favoriteTreat}")
-                is Cat -> uniqueFeatures.add("${m.name} killed ${m.numberOfMiceSlain} mice")
-            }
+    this.getMammalsAndDirectFriends().forEach { m ->
+        when (m) {
+            is Human -> uniqueFeatures.add("${m.name} is nicknamed ${m.nickname}")
+            is Dog -> uniqueFeatures.add("${m.name} loves ${m.favoriteTreat}")
+            is Cat -> uniqueFeatures.add("${m.name} killed ${m.numberOfMiceSlain} mice")
         }
-    }*/
-    val allMammals = this.getMammalsAndDirectFriends()
+    }
+    /*val allMammals = this.getMammalsAndDirectFriends()
     allMammals.filterIsInstance<Cat>().onEach { uniqueFeatures.add("${it.name} killed ${it.numberOfMiceSlain} mice") }
     allMammals.filterIsInstance<Human>().onEach {uniqueFeatures.add("${it.name} is nicknamed ${it.nickname}")  }
-    allMammals.filterIsInstance<Dog>().onEach { uniqueFeatures.add("${it.name} loves ${it.favoriteTreat}") }
+    allMammals.filterIsInstance<Dog>().onEach { uniqueFeatures.add("${it.name} loves ${it.favoriteTreat}") }*/
     return uniqueFeatures
 }
 
