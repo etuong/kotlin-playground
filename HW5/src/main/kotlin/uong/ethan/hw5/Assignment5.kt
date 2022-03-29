@@ -155,7 +155,7 @@ fun List<Mammal>.groupByType(): Map<String?, List<Mammal>> {
 //          see the sample output below
 fun List<Mammal>.getUniqueFeatures(): List<String> {
     val uniqueFeatures = arrayListOf<String>()
-    this.getMammalsAndDirectFriends().forEach { m ->
+    this.getMammalsAndDirectFriends().sortedBy { it.name }.forEach { m ->
         when (m) {
             is Human -> uniqueFeatures.add("${m.name} is nicknamed ${m.nickname}")
             is Dog -> uniqueFeatures.add("${m.name} loves ${m.favoriteTreat}")
