@@ -1,3 +1,8 @@
+package uong.ethan.hw6
+
+import java.io.File
+import java.io.FileWriter
+
 // Assignment 6
 //
 // Create a project like you did for HW5, but call it HW6
@@ -107,12 +112,72 @@
 // Number of slices per person for 1 people: 12
 // Number of slices per person for 12 people: 1
 
+fun walk(file: File, indentation: Int) {
+    println("${"  ".repeat(indentation)}${file.name}")
+    if (file.isDirectory) {
+        file.listFiles().forEach { walk(it, indentation + 1) }
+    }
+}
+
+fun printSlices(input: Int): Int {
+    return 12 / input
+}
+
+fun partyPlanning(vararg inputs: Int) {
+    for (input in inputs) {
+        try {
+            println("Number of slices per person for ${input} people: ${printSlices(input)}")
+        } catch (e: ArithmeticException) {
+            println("Whoops! I couldn't divide the pizza among ${input} people!")
+        }
+    }
+}
+
 fun main() {
     // TODO create sample-files file structure and files
+    val sampleFilesDirectory = File("sample-files")
+    val kotlinDirectory = File(sampleFilesDirectory, "kotlin")
+    (1..3).forEach {
+        var i = it
+        var packageDirectory = File(kotlinDirectory, "package$i")
+        packageDirectory.mkdirs()
+        (1..2).forEach {
+            var sampleFileNumber = "${i}${it}"
+            var sampleFile = File(packageDirectory, "Sample${sampleFileNumber}.kt")
+            FileWriter(sampleFile).use {
+                it.write(
+                    """
+                    package package${i}
+                    
+                    class Sample${sampleFileNumber} {
+                        fun foo() {
+                            println("Hello Sample${sampleFileNumber}!!!")
+                        }
+                    }
+                    """.trimIndent()
+                )
+            }
+        }
+    }
+    var resourcesDirectory = File(sampleFilesDirectory, "resources")
+    resourcesDirectory.mkdirs()
+    setOf("fee", "fie", "foo").forEach {
+        var filename = it
+        var resourceFile = File(resourcesDirectory, "${filename}.txt")
+        FileWriter(resourceFile).use { fw ->
+            (1..3).forEach {
+                fw.write("${filename} ".repeat(3))
+                fw.write("\n")
+            }
+        }
+    }
 
     // TODO recursively walk sample-files file structure and print file names with appropriate indentation
+    walk(File("sample-files"), 0)
 
     // TODO print a blank line
+    println()
 
     // TODO call partyPlanning passing 3, 6, 2, 0, 1
+    partyPlanning(3, 6, 2, 0, 1, 12)
 }
