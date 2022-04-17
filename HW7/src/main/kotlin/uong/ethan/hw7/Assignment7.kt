@@ -39,11 +39,11 @@ class Pilot() : HondaCar()
 //       if there are no cars in the current stock, it calls the assemblyLine() to produce a list of new cars
 //          these new cars are placed in current stock
 //       then it returns the first car from stock (and removes it from stock) - use the removeAt(0) function
-class Factory<T : Car>(val assemblyLine: () -> MutableList<T>) {
+class Factory<T : Car>(val assemblyLine: () -> List<T>) {
     var stock: MutableList<T> = mutableListOf()
     fun getCar(): T {
         if (stock.isEmpty()) {
-            stock = this.assemblyLine()
+            stock = this.assemblyLine().toMutableList()
         }
         return stock.removeAt(0)
     }
@@ -54,9 +54,9 @@ class Factory<T : Car>(val assemblyLine: () -> MutableList<T>) {
 //    it has an immutable name property in its constructor
 //    it has a trashCar() function that takes in a car of the type they can dispose
 //       prints out "crunching a [car type name] at [junkyard name]"
-class JunkYard<T : Car>(private val name: String = "") {
+class JunkYard<T : Car>(private val name: String) {
     fun trashCar(car: T) {
-        println("crunching a ${car::class} at ${this.name}")
+        println("crunching a ${car::class.simpleName} at ${this.name}")
     }
 }
 
@@ -65,7 +65,7 @@ class JunkYard<T : Car>(private val name: String = "") {
 //    is passed immutable name, Factory and Junkyard properties to its constructor
 //    has a purchaseCar() function that gets a car from the factory, sets its shine = true, and returns it
 //    has a tradeIn() function that takes a car of the dealer's type and sends it to the junkYard's trashCar() function
-class Dealer<T : Car>(val name: String, val factory: Factory<T>, val junkYard: JunkYard<T>) {
+class Dealer<T : Car>(val name: String, private val factory: Factory<out T>, private val junkYard: JunkYard<T>) {
     fun purchaseCar(): T {
         val car: T = this.factory.getCar()
         car.shiny = true
@@ -85,7 +85,7 @@ class Dealer<T : Car>(val name: String, val factory: Factory<T>, val junkYard: J
 //    NOTE: this function should return the same type of car that the Dealer is parameterized with
 fun <T : Car> purchaseCarAndReport(dealer: Dealer<T>): T {
     val car: T = dealer.purchaseCar()
-    println("Bought a ${car::class} from ${dealer.name}")
+    println("Bought a ${car::class.simpleName} from ${dealer.name}")
     return car
 }
 
@@ -96,10 +96,13 @@ fun <T : Car> purchaseCarAndReport(dealer: Dealer<T>): T {
 //    walks through the receiver list of cars (use forEachIndexed)
 //        trades in the current car with the [n % dealers.size] dealer that was passed in
 //           (this alternates through all dealers passed in)
+fun <T : Car> List<T>.tradeIn(vararg dealers: Dealer<in T>) {
+    this.forEachIndexed { index, car ->
+        val dealer = dealers[index % dealers.size]
+        dealer.tradeIn(car)
+    }
+}
 
-//fun <T: Car> List.tradeIn() {
-//
-//}
 // Fill in the missing details in the main function
 //
 // Expected Output
@@ -146,11 +149,11 @@ fun <T : Car> purchaseCarAndReport(dealer: Dealer<T>): T {
 // crunching a CRV at Hammered Hondas
 
 fun main() {
-    val toyotaCars = mutableListOf(Camry(), Rav4(), Prius())
-    val hondaCars = mutableListOf(Accord(), CRV(), Pilot())
+    val toyotaCars = listOf(Camry(), Rav4(), Prius())
+    val hondaCars = listOf(Accord(), CRV(), Pilot())
     val toyotaFactory = Factory { toyotaCars }
     val hondaFactory = Factory { hondaCars }
-    val evilMiddleman = Factory { mutableListOf(Camry(), Rav4(), Prius(), Accord(), CRV(), Pilot()) }
+    val evilMiddleman = Factory { toyotaCars.plus(hondaCars) }
 
     val junkyard1 = JunkYard<ToyotaCar>("Trashed Toyotas")
     val junkyard2 = JunkYard<HondaCar>("Hammered Hondas")
@@ -158,7 +161,7 @@ fun main() {
 
     val toyotaDealer1 = Dealer("Bob's Toyota", toyotaFactory, junkyard1)
     val hondaDealer1 = Dealer("Mick's Honda", hondaFactory, junkyard2)
-    val toyotaDealer2 = Dealer("Sue's Toyoya", toyotaFactory, junkyard1)
+    val toyotaDealer2 = Dealer("Sue's Toyota", toyotaFactory, junkyard3)
     val allDealer = Dealer("Overpay us or die!", evilMiddleman, junkyard3)
 
     val dealers = mutableListOf(toyotaDealer1, hondaDealer1, toyotaDealer2, allDealer)
@@ -166,13 +169,14 @@ fun main() {
     val carsBought = (0..19).map {
         purchaseCarAndReport(dealers[it % dealers.size])
     }.toList()
-    //val carsBought = TODO("map 0..19 into calls to purchaseCarAndReport() from dealer n % dealers.size")
 
     // TODO trade in toyotas
     //    filter carsBought to just toyotas
     //    call tradeIn on the result to dealers toyotaDealer1, toyotaDealer2 and allDealer
+    carsBought.filterIsInstance<ToyotaCar>().tradeIn(toyotaDealer1, toyotaDealer2, allDealer)
 
     // TODO trade in hondas
     //    filter carsBought to just hondas
-    //    call tradeIn on the result to dealers hondaDealer1 and allDealer    
+    //    call tradeIn on the result to dealers hondaDealer1 and allDealer
+    carsBought.filterIsInstance<HondaCar>().tradeIn(hondaDealer1, allDealer)
 }
