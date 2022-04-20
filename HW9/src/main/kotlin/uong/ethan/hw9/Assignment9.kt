@@ -2,10 +2,7 @@ package uong.ethan.hw9
 
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.*
 import java.awt.BorderLayout
 import java.awt.TextArea
 import java.awt.TextField
@@ -50,16 +47,19 @@ data class SampleFile(
     val content: List<String>,
 )
 
-fun walk(file: File): List<File> {
-    val resultList: MutableList<File> = ArrayList()
+// Not necessary, could just use emit() but adding this here just for kicks
+suspend fun FlowCollector<SampleFile>.emitFile(sampleFile: SampleFile) {
+    emit(sampleFile)
+}
+
+suspend fun walk(file: File, flowCollector: FlowCollector<SampleFile>) {
     file.listFiles().forEach {
         if (it.isFile) {
-            resultList.add(it)
+            flowCollector.emitFile(SampleFile(it.name, it.useLines { it.toList() }))
         } else if (it.isDirectory) {
-            resultList.addAll(walk(it))
+            walk(it, flowCollector)
         }
     }
-    return resultList
 }
 
 fun main() {
@@ -80,10 +80,7 @@ fun main() {
                     // TODO     the name of the file
                     // TODO     the file's contents
                     fun fileFlow(): Flow<SampleFile> = flow {
-                        val allSampleFile: List<File> = walk(File("sample-files"))
-                        allSampleFile.forEach {
-                            emit(SampleFile(it.name, it.useLines { it.toList() }))
-                        }
+                        walk(File("sample-files"), this)
                     }
 
                     // TODO when the button is pressed
@@ -117,7 +114,7 @@ fun main() {
                     fileName.text = "We hope you have enjoyed this presentation"
                     delay(2000)
                     fileName.text = ""
-                    
+
                     // TODO   if the button is pressed multiple times, be sure that we don't end up running
                     // TODO       multiple coroutines at the same time
                     // TODO
