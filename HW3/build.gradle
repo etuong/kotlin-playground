@@ -4,7 +4,7 @@ plugins {
 }
 
 application {
-    mainClass = "uong.ethan.hw3.Assignment3Kt"
+    mainClass = "ExerciseKt"
 }
 group 'org.example'
 version '1.0-SNAPSHOT'

@@ -9,7 +9,6 @@
 // Replace all comments that start with TODO
 // Leave all other code as-is
 
-package uong.ethan.hw5 // TODO change to YOUR package name here
 
 // In this assignment, you'll work with Kotlin's Lists and Maps
 

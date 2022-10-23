@@ -9,8 +9,6 @@
 // Replace all comments that start with TODO
 // Leave all other code as-is
 
-package uong.ethan.hw4 // TODO change to YOUR package name here
-
 // In this assignment, you'll create a custom linked-list class
 // TODO Create class MyList
 //    You're implementing a linked-list by hand; DO NOT just wrap an existing linked list

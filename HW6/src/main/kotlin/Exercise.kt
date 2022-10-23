@@ -1,5 +1,3 @@
-package uong.ethan.hw6
-
 import java.io.File
 import java.io.FileWriter
 

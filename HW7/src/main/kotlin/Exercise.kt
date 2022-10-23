@@ -1,4 +1,3 @@
-package uong.ethan.hw7
 
 // Assignment 7
 //

@@ -9,7 +9,6 @@
 // Replace all comments that start with TODO
 // Leave all other code as-is
 
-package uong.ethan.hw3
 
 // TODO Create three classes: Person, Doctor and FixedPerson
 //    (you can put them in this file or separate file(s)

@@ -9,8 +9,6 @@
 // Replace all comments that start with TODO
 // Leave all other code as-is
 
-package uong.ethan.hw2
-
 // TODO define a function named graduation that
 //    takes three parameters
 //       names - a list of Strings
