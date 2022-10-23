@@ -3,3 +3,4 @@ Syllabus.pdf
 *.zip
 .idea
 build/
+.gradle
