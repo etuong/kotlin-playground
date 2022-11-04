@@ -1,17 +1,3 @@
-// Assignment 5
-//
-// Create a project like you did for HW1, but call it HW5
-//
-// Copy this file into your project. Make sure you change the package and put it in the appropriate
-//   folders in your project. DO NOT CHANGE ANY OF THE CODE THAT CAME IN THIS FILE
-//
-
-// Replace all comments that start with TODO
-// Leave all other code as-is
-
-
-// In this assignment, you'll work with Kotlin's Lists and Maps
-
 // Create the following classes:
 //    (you can put them in this file or separate file(s)
 //
@@ -252,10 +238,6 @@ fun List<Mammal>.getUniqueFeatures(): List<String> {
 //      Thunderbean killed 42 mice
 //      Worf loves Gagh
 
-
-// DO NOT CHANGE THE FOLLOWING CODE!!!
-// DO NOT CHANGE THE FOLLOWING CODE!!!
-// DO NOT CHANGE THE FOLLOWING CODE!!!
 fun main() {
     val mammals = listOf(
         Dog(

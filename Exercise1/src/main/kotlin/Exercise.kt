@@ -1,13 +1,3 @@
-// Assignment 2
-//
-// Create a project like you did for HW1, but call it HW2
-//
-// Copy this file into your project. Make sure you change the package and put it in the appropriate
-//   folders in your project. DO NOT CHANGE ANY OF THE CODE THAT CAME IN THIS FILE
-//
-
-// Replace all comments that start with TODO
-// Leave all other code as-is
 
 // TODO define a function named graduation that
 //    takes three parameters

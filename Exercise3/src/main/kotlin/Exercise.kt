@@ -1,22 +1,4 @@
-// Assignment 4
-//
-// Create a project like you did for HW1, but call it HW4
-//
-// Copy this file into your project. Make sure you change the package and put it in the appropriate
-//   folders in your project. DO NOT CHANGE ANY OF THE CODE THAT CAME IN THIS FILE
-//
-
-// Replace all comments that start with TODO
-// Leave all other code as-is
-
-// In this assignment, you'll create a custom linked-list class
-// TODO Create class MyList
-//    You're implementing a linked-list by hand; DO NOT just wrap an existing linked list
-
 class MyList {
-    //    You are allowed to look up the concepts of implementing a linked list,
-    //       but you must implement it in a similar manner to the Binary tree I implemented in class
-    //
     //    Contains a nested Node class to hold each item in the linked list
     //       A Node Contains
     //          an integer value
@@ -117,10 +99,6 @@ fun myListOf(vararg inputs: Int): MyList = MyList().apply { inputs.forEach { thi
 // list1[4]: 5
 // list1[8]: -1
 
-
-// DO NOT CHANGE THE FOLLOWING CODE!!!
-// DO NOT CHANGE THE FOLLOWING CODE!!!
-// DO NOT CHANGE THE FOLLOWING CODE!!!
 fun main() {
     val list = myListOf(1, 2, 3, 4, 5)
 

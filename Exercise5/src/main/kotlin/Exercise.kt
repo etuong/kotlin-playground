@@ -1,13 +1,6 @@
 import java.io.File
 import java.io.FileWriter
 
-// Assignment 6
-//
-// Create a project like you did for HW5, but call it HW6
-//
-// Copy this file into your project. Make sure you change the package and put it in the appropriate
-//   folders in your project. DO NOT CHANGE ANY OF THE CODE THAT CAME IN THIS FILE __UNLESS__ INSTRUCTED TO DO SO!
-//
 // Helpful functions
 //    File.mkdirs()
 //       creates the directory specified by a file and all of its parent directories (if they don't exist)

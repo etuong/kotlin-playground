@@ -5,3 +5,6 @@ This repository is a playground to learn Kotlin. If you are experienced with Jav
 ### Notes
 
 This repo uses a Gradle 7.5 wrapper that is compatiable with Java 18. You may use any version of Java but you'll want to  change distributionUrl in the gradle-wrapper.properties.
+
+### Run
+`./gradlew run -p {Exercise}`

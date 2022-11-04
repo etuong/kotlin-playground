@@ -1,11 +1,3 @@
-
-// Assignment 7
-//
-// Create a project like you did for HW6, but call it HW7
-//
-// Copy this file into your project. Make sure you change the package and put it in the appropriate
-//   folders in your project. DO NOT CHANGE ANY OF THE CODE THAT CAME IN THIS FILE __UNLESS__ INSTRUCTED TO DO SO!
-//
 // Define a simple class hierarchy as follows:
 //    Car - has a mutable Boolean property shiny; initialized to false - dealers will shine the car before delivery
 //          note - do not define shiny in the constructor!
